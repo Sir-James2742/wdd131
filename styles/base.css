@@ -1,0 +1,102 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+:root{
+    --background-color: #f4f1f1;
+    --text-color: #0d0d0d;
+}
+#course-title{
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-align: center;
+    color: var(--text-color);
+}
+nav {
+    background-color: #dce9f1;
+    margin: 0 auto;
+    max-width: 800px;
+    padding: 10px;
+}
+nav ul {
+    display: flex;
+    text-decoration: none;
+    color: var(--text-color);
+    text-align: center;
+    justify-content: space-around;
+    list-style: none;
+}
+nav a:hover {
+    text-decoration: overline;
+}
+.active {
+    color: yellow;
+}
+body{
+    font-family: lato, sans-serif;
+    width:1000px;
+    align-content: center;   
+}
+h1, h2{
+    text-align: center;
+}
+.main{
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    justify-content: center;
+}
+.about-me {
+    display:flex;
+    align-items: start;
+    padding: 10px 30px 10px 10px;
+    gap: 10px;
+    
+}
+.card{
+    border: 1px solid #1e1d1d;
+    border-radius: 10px;
+
+}
+.card ul {
+    place-self: center;
+    
+}
+.about-me.kenya {
+
+     padding-right: 230px;
+}
+footer {
+    background-color: #dce9f1;
+    text-align: center;
+    padding: 10px;
+    margin-top: 20px;
+    color: var(--text-color);
+    font-family: roboto, sans-serif;
+}
+.date {
+    color: #782e2e;
+    font-weight: bold;
+}
+h2 {
+    font-weight: 700;
+    color: #0d0d0d;
+    background-color: #dce9f1;
+}
+header {
+    background-color: #dce9f1;
+    padding: 20px;
+    text-align: center;
+}
+.card.my{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    gap: 100px;
+}
