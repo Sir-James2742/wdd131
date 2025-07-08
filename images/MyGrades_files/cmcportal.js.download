@@ -1,0 +1,312 @@
+﻿/*
+* CMC Portal JavaScript Library v1.0
+*
+* Created by Henry Tavarez
+* Date: 2009-09-08 (Tue, Sep 8th, 2009)
+*/
+
+
+$(document).ready(function () {
+    $("#cmcStudentMsgTray").each(function () {
+
+        /******************************************************************************
+        All variables that can be configured appear in this section
+        ******************************************************************************/
+        var msgTray = {
+            traySpeed: 500, // tray animation speed in milliseconds        
+            noAlertLabel: noAlertLabel, // message that displays when there are no alerts            
+            noHoldLabel: noHoldLabel, // message that displays when there are no holds
+            noApptLabel: noApptLabel, // message that displays when there are no appointments
+            closeLabel: closeLabel, // label that appears for the close link... it's usually replaced in the CSS with an icon but the label is needed for accessibility
+            viewAllAlertsLabel: viewAllAlertsLabel, // label that appears for the view all link in the alerts section
+            viewAllHoldsLabel: viewAllHoldsLabel, // label that appears for the view all link in the holds section
+            viewAllApptsLabel: viewAllApptsLabel, // label that appears for the view all link in the appointments section
+            noServiceLabel: noServiceLabel, // message that displays when the service is unavailable
+            noMessagesLabel: noMessagesLabel, // message that displays when the service returns zero messages
+
+            /******************************************************************************
+            Do not change any code after this line 
+            ******************************************************************************/
+            trayOpen: false,
+            trayXML: lvBaseURL + "/PortalAsyncServices/StudentAsyncService.asmx/GetStudentMessageList", //URL for the service that returns the XML of the message center tray
+            holdURL: lvBaseURL + "/secure/student/Prof/msg_Home.aspx?tab=1", // URL to the page that normally displays holds
+            alertURL: lvBaseURL + "/secure/student/Prof/msg_Home.aspx?tab=1", // URL to the page that normally displays alerts
+            apptURL: lvBaseURL + "/secure/student/Prof/msg_Home.aspx?tab=2", // URL to the page that normally displays appointments
+            alertHeader: $("#cmcTrayAlerts").html(),
+            holdHeader: $("#cmcTrayHolds").html(),
+            apptHeader: $("#cmcTrayAppts").html()
+        };
+
+
+        // HTML thats being appended to the page specifically for the tray. These are the sections that the messages will be appended to
+        var trayHTML = "<div id='cmcMsgHolds'><h2>" + msgTray.holdHeader.substring(msgTray.holdHeader.indexOf("</") + 5, msgTray.holdHeader.lastIndexOf("</")) + "</h2><ol></ol><a href='#' class='cmcCloseMsgTray'>" + msgTray.closeLabel + "</a><a href='" + msgTray.holdURL + "' class='cmcViewAll'>" + msgTray.viewAllHoldsLabel + "</a></div>";
+        trayHTML += "<div id='cmcMsgAlerts'><h2>" + msgTray.alertHeader.substring(msgTray.alertHeader.indexOf("</") + 5, msgTray.alertHeader.lastIndexOf("</")) + "</h2><ol></ol><a href='#' class='cmcCloseMsgTray'>" + msgTray.closeLabel + "</a><a href='" + msgTray.alertURL + "' class='cmcViewAll'>" + msgTray.viewAllAlertsLabel + "</a></div>";
+        trayHTML += "<div id='cmcMsgAppts'><h2>" + msgTray.apptHeader.substring(msgTray.apptHeader.indexOf("</") + 5, msgTray.apptHeader.lastIndexOf("</")) + "</h2><ol></ol><a href='#' class='cmcCloseMsgTray'>" + msgTray.closeLabel + "</a><a href='" + msgTray.apptURL + "' class='cmcViewAll'>" + msgTray.viewAllApptsLabel + "</a></div>";
+        $(this).append(trayHTML);
+
+        // Click Event Listener for close link
+        $(this).find("a.cmcCloseMsgTray").click(function () {
+            msgTray.trayOpen = false;
+            $(this).parent().slideUp(msgTray.traySpeed);
+            $("#cmcStudentMsgTray ul a").removeClass("cmcTrayTabActive");
+            return false;
+        });
+
+        // Tray Navigation Event Listener. Clicking each link will open the corresponding tray section
+        $(this).find("#cmcTrayHolds a").click(function () {
+            loadTrayMeassages("Hold", msgTray);
+            return false;
+        });
+        $(this).find("#cmcTrayAlerts a").click(function () {
+            loadTrayMeassages("Alert", msgTray);
+            return false;
+        });
+        $(this).find("#cmcTrayAppts a").click(function () {
+            loadTrayMeassages("Appointment", msgTray);
+            return false;
+        });
+
+    });
+});
+
+
+function loadTrayMeassages(lvMsgType, trayObj) {
+    switch (lvMsgType) {
+        case "Alert":
+            var msgSection = "#cmcMsgAlerts";
+            var navSection = "#cmcTrayAlerts";
+            var msgURL = trayObj.alertURL;
+            var noMsgLabel = trayObj.noAlertLabel;
+            var noDate = false;
+            break;
+        case "Hold":
+            var msgSection = "#cmcMsgHolds";
+            var navSection = "#cmcTrayHolds";
+            var msgURL = trayObj.holdURL;
+            var noMsgLabel = trayObj.noHoldLabel;
+            var noDate = true;
+            break;
+        case "Appointment":
+            var msgSection = "#cmcMsgAppts";
+            var navSection = "#cmcTrayAppts";
+            var msgURL = trayObj.apptURL;
+            var noMsgLabel = trayObj.noApptLabel;
+            var noDate = false;
+            break;
+    }
+
+    // Ajax to get messages. On success, function parses XML, gets count of each message type and creates HTML for tray
+    $.ajax({
+        type: "POST",
+        url: trayObj.trayXML,
+        cache: false,
+        data: { msgType: lvMsgType }, //sortDirection: "Descending"
+        success: function (data) {
+            var msgCount = 0;
+            $(msgSection + " ol").html("");
+
+            $("StudentMessage", data).each(function () {
+                msgCount++;
+                var msgDate = "";
+
+                if (!noDate) {
+                    msgDate = "<span>" + $(this).find("DisplayDate").text() + "</span> ";
+
+
+                }
+
+                var msgSubject = $(this).find("Subject").text();
+                if (msgSubject.length > 128) msgSubject = msgSubject.substring(0, 128) + "...";
+
+                $(msgSection + " ol").append("<li>" + msgDate + "<a href='" + msgURL + "'>" + msgSubject + "</a></li>");
+            });
+
+            if (msgCount === 0) {
+                $(msgSection + " ol").html("<li>" + noMsgLabel + "</li>");
+                if (lvMsgType === "Hold") $("#cmcMsgHolds .cmcViewAll").hide();
+            } else {
+                if (lvMsgType === "Hold") $("#cmcMsgHolds .cmcViewAll").show();
+            }
+
+            showTray(navSection, msgSection, trayObj);
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            $(msgSection + " ol").html("<li>" + trayObj.noServiceLabel + "</li>");
+            showTray(navSection, msgSection, trayObj);
+        }
+
+    });
+}
+
+
+function showTray(navSection, msgSection, trayObj) {
+    $("#cmcStudentMsgTray div").hide();
+    $("#cmcStudentMsgTray ul a").removeClass("cmcTrayTabActive");
+    if (trayObj.trayOpen) {
+        $(msgSection).show();
+    } else {
+        trayObj.trayOpen = true;
+        $(msgSection).slideDown(trayObj.traySpeed);
+    }
+    $(navSection + " a").addClass("cmcTrayTabActive");
+}
+
+/*** START: IFRAME RESIZE CODE ***/
+
+/* Following functions dynamically resizes iframe to expand or collapse based on it's inner contnet
+To use this functionality just provide name of the iframe to BeginFrameResize function like following:
+<script type="text/javascript">
+BeginFrameResize(["iframeCourseReasonPrompt", "iframeConfirmationOrErrorList"]);
+</script>
+*/
+
+//Input the IDs of the IFRAMES you wish to dynamically resize to match its content height:
+//Separate each ID with a comma. Examples: ["myframe1", "myframe2"] or ["myframe"] or [] for none:
+var iframeids = ["iFrame1"];
+
+//Should script hide iframe from browsers that don't support this script (non IE5+/NS6+ browsers. Recommended):
+var iframehide = "yes";
+
+var getFFVersion = navigator.userAgent.substring(navigator.userAgent.indexOf("Firefox")).split("/")[1];
+var FFextraHeight = 0; //parseFloat(getFFVersion) >= 0.1 ? 16 : 0 //extra height in px to add to iframe in FireFox 1.0+ browsers
+
+function BeginFrameResize(frameIdParam) {
+    iframeids = frameIdParam;
+    if (window.addEventListener)
+        window.addEventListener("load", resizeCaller, false);
+    else if (window.attachEvent)
+        window.attachEvent("onload", resizeCaller);
+    else
+        window.onload = resizeCaller;
+}
+
+function resizeCaller() {
+    var dyniframe = new Array();
+    for (i = 0; i < iframeids.length; i++) {
+        if (document.getElementById)
+            resizeIframe(iframeids[i]);
+        //reveal iframe for lower end browsers? (see var above):
+        if ((document.all || document.getElementById) && iframehide === "no") {
+            var tempobj = document.all ? document.all[iframeids[i]] : document.getElementById(iframeids[i]);
+            tempobj.style.display = "block";
+        }
+    }
+}
+
+function resizeIframe(frameid) {
+    var currentfr = document.getElementById(frameid);
+    if (currentfr && !window.opera) {
+        currentfr.style.display = "block";
+        if (currentfr.contentDocument && currentfr.contentDocument.body.offsetHeight) //ns6 syntax
+            currentfr.height = currentfr.contentDocument.body.offsetHeight + FFextraHeight;
+        else if (currentfr.Document && currentfr.Document.body.scrollHeight) //ie5+ syntax
+            currentfr.height = currentfr.Document.body.scrollHeight;
+        if (currentfr.addEventListener)
+            currentfr.addEventListener("load", readjustIframe, false);
+        else if (currentfr.attachEvent) {
+            currentfr.detachEvent("onload", readjustIframe); // Bug fix line
+            currentfr.attachEvent("onload", readjustIframe);
+        }
+    }
+    if (currentfr.height < 1024)
+        currentfr.top = (1024 - currentfr.height) / 40;
+    else
+        currentfr.top = 0;
+}
+
+function readjustIframe(loadevt) {
+    var crossevt = (window.event) ? event : loadevt;
+    var iframeroot = (crossevt.currentTarget) ? crossevt.currentTarget : crossevt.srcElement;
+    if (iframeroot)
+        resizeIframe(iframeroot.id);
+}
+
+function loadintoIframe(iframeid, url) {
+    if (document.getElementById)
+        document.getElementById(iframeid).src = url;
+}
+/*** END: IFRAME RESIZE CODE ***/
+function doCMEvent(page) {
+    var winHeight = Math.round(.30 * screen.availHeight);
+    var winWidth = Math.round(.5 * screen.availWidth);
+    var winleft = (screen.width / 2) - (winWidth / 2);
+    var wintop = (screen.height / 2) - (winHeight / 2);
+    var winstyle = 'dialogWidth: ' + winWidth + 'px; dialogHeight: '
+        + winHeight + 'px; center: yes; help: no; status: no; resizable: yes; maximize: yes';
+    if (window.showModalDialog)
+        showModalDialog(page, null, winstyle);
+    else
+        window.open(page, 'CM Event', 'width=' + winWidth + ', height=' + winHeight + ', location=no, left=' + winleft + ', top=' + wintop + ', menubar=no, status=no, toolbar=no, scrollbars=auto, resizable=no', 'false');
+
+    return false;
+}
+function showExpMessage(msgToShow) {
+    $(document).ready(function () {
+        $.blockUI({ message: msgToShow, blockMsgClass: 'pagetitle', timeout: 5000, onOverlayClick: $.unblockUI });
+
+    });
+
+
+}
+/* code to hide/show quicklinks*/
+$(document).ready(function () {
+    if (typeof sessionStorage === "undefined") {
+        sessionStorage.showLink = "1";
+        
+    }
+
+    if (sessionStorage.showLink === "1") {
+        
+        $('#quick_links').show();
+        $('[id$="lblShowLink"]').text($('[id$="hfHideLinkText"]').val());
+    }
+    else if (sessionStorage.showLink === "0") {
+        
+        $('#quick_links').hide();
+        $('[id$="lblShowLink"]').text($('[id$="hfShowLinkText"]').val());
+    }
+
+    $("#Show_quick_links").click(function () {
+        $("#quick_links").toggle(1000);
+        var valset = 0;
+        if (typeof (Storage) !== "undefined") {
+            // Code for localStorage/sessionStorage.
+            if (sessionStorage.showLink === "1") {
+                sessionStorage.setItem("showLink", "0");
+                $('[id$="lblShowLink"]').text($('[id$="hfShowLinkText"]').val());
+                valset = 1;
+            }
+            else if (sessionStorage.showLink === "0") {
+                sessionStorage.setItem("showLink", "1");
+                $('[id$="lblShowLink"]').text($('[id$="hfHideLinkText"]').val());
+                valset = 1;
+            }
+            else {
+                sessionStorage.setItem("showLink", "1");
+            }
+        }
+        if ( ($('#quick_links').is(":visible") == 1) && ( valset === 0) ) {
+            $('[id$="lblShowLink"]').text($('[id$="hfHideLinkText"]').val());
+        
+        }
+    });
+
+    if ($('#quick_links  ul li').length < 1) {
+        $('#Show_quick_links').remove();
+    }
+});
+
+// ===== Scroll to Top ==== 
+$(window).scroll(function () {
+    if ($(this).scrollTop() >= 50) {        // If page is scrolled more than 50px
+        $('#return-to-top').fadeIn(200);    // Fade in the arrow
+    } else {
+        $('#return-to-top').fadeOut(200);   // Else fade out the arrow
+    }
+});
+$('#return-to-top').click(function () {      // When arrow is clicked
+    $('body,html,#wrapper').animate({
+        scrollTop: 0                       // Scroll to top of body
+    }, 100);
+});
+
