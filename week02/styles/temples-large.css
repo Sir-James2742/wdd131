@@ -14,9 +14,10 @@
     footer,header{
         background-color: #020240;
     }
-    main h1{
+    h2{
         grid-column:1/4;
         text-align: center;
+        font-size: 1.5rem;
     }
    #menubutton ,.open{
     display:none;
@@ -24,6 +25,7 @@
    header{
     display: flex;
     justify-content: space-evenly;
+    padding-right: 15rem;
     
    }
    header h1 {
