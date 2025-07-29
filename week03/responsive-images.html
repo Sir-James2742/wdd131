@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Images</title>
+    <meta name="description" content="A simple example of responsive images using HTML and CSS.">
+    <meta name="author" content="James Omondi">
+    <link rel="stylesheet" href="styles/responsive-images.css">
+</head>
+<body>
+    <header>
+        <h1>Responsive Images Example</h1>
+    </header>
+    <main>
+        <div class="hero">
+            <picture>
+                <source srcset="../images/temple-large.jpg" media="(min-width: 1000px)">
+                <source srcset="../images/temple-medium.jpg" media="(min-width: 500px)">
+                <img src="../images/temple-small.jpg" alt="temple" width="500" height="250"> 
+            </picture>
+        </div>
+    </main>    
+    
+</body>
+</html>
