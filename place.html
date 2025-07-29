@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Country page</title>
+    <meta name="description" content="Country page layout.">
+    <meta name="author" content="James Omondi">
+    <link rel="stylesheet" href="styles/place.css">
+    <link rel="stylesheet" href="styles/place-large.css">
+    <script src="../scripts/place.js" defer></script>
+</head>
+<body>
+    <header>
+        <h1>Madagascar</h1>
+    </header>
+    <main>
+        <picture>
+            <source srcset="../images/nebula.webp" media="(min-width: 1000px)" height="500" >
+            <img src="../images/small.webp" alt="Country Image" >
+        </picture>
+        <article class="data">
+            <h2>Data</h2>
+            <ul>
+                <li>Area : 10 million</li>
+                <li>population : 100,000 sq km</li>
+                <li>Capital: Antananarivo</li>
+                <li>Languages: Malagasy,French</li>
+                <li>Currency: Malagasy Ariary</li>
+                <li>Time Zone: UTC+3</li>
+                <li>Calling Code:+261</li>
+                <li>Internet TLD: .mg</li>
+            </ul>
+        </article>
+        <article class="info">
+            <div class="weather">
+                <h2>Weather</h2>
+                <img src="/images/weather-icon.svg" alt="Weather Icon" >
+            </div>
+            <ul>
+                <li>Temperature: <span id="temp"></span></li>
+                <li>Condition: <span id="condition"></span></li>
+                <li>Wind: <span id="wind"></span></li>
+                <li>Wind Chill: <span id="chill"></span></li>
+            </ul>
+        </article>
+    </main>
+    <footer>
+        <p>©<span id="currentyear"></span> 🧿 James Omondi 🧿Madagascar</p>
+        <p><span id="lastModified"></span></p>
+    </footer>
+</body>
+</html>
