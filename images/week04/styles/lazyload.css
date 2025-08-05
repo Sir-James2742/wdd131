@@ -1,0 +1,16 @@
+    img{
+        display: block;
+        margin: 0 auto;
+        width: 80%;
+        height: auto;
+        padding: 10px;
+        animation:fade;
+    }
+    @keyframes fade {
+        0% { opacity: 0; }
+        100%{ opacity: 1; }
+    }
+    h1 {
+        text-align: center;
+        color: #333;
+    }
