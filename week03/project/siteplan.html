@@ -1,57 +1,213 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nairobi House Hunt</title>
-    <meta name="description" content="A site to help you find a rental house  in Nairobi.">
+    <meta name="description"
+        content="Find your perfect rental home in Nairobi - apartments, studios, and houses for students and professionals">
     <meta name="author" content="James Omondi">
     <link rel="stylesheet" href="styles/siteplan.css">
     <link rel="stylesheet" href="styles/siteplan-large.css">
+    <script src="scripts/siteplan.js"></script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Roboto&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&family=Roboto:wght@400;500&display=swap"
         rel="stylesheet">
-    
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
 </head>
+
 <body>
     <header>
-        <h1>Nairobi House Hunt</h1>
-        <button type="button" id="menubutton"></button>
-        <nav>
-            <ul class="navlist">
-                <li><a href="#" id="home">Home</a></li>
-                <li><a href="#" id="rentals">Rentals Search</a></li>
-                <li><a href="#" id="rules">Terms and condition</a></li>
-                <li><a href="#" id="reviews">Reviews</a></li>
-            </ul>
-        </nav>
+        <div class="header-container">
+            <h1>Nairobi House Hunt</h1>
+            <button type="button" id="menubutton" aria-label="Toggle navigation menu">☰</button>
+            <nav id="mainnav">
+                <ul class="navlist">
+                    <li><a href="#" class="active" id="home">Home</a></li>
+                    <li><a href="#rentals" id="rentals">Rentals Search</a></li>
+                    <li><a href="#rules" id="rules">Terms & Conditions</a></li>
+                    <li><a href="#reviews" id="reviews">Reviews</a></li>
+                </ul>
+            </nav>
+        </div>
     </header>
-    <main>
-        <h1>Site Plan</h1>
-        <p>This is a site plan for a house rental website.</p>
-        <img src="images/siteplan.png" alt="Site Plan">
-        <article class="purpose">
-            <h2>Site purpose</h2>
-            <p>The purpose of this site is to provide a platform for users to search for rental houses in Nairobi, view details, and contact landlords.</p>
-     
-        </article>
-        <article class="scenario">
-            <h2>Scenario</h2>
-            <ul>
-                <li>Where are the safest Neighbour hoods</li>
-                <li>Where can I get an off campus apartment around School Instituition</li>
-                <li>Where can I get affordable housing for students</li>
 
-            </ul>   
-           
-        </article>
+    <main>
+        <section class="hero">
+            <picture>
+                <source media="(max-width: 600px)" srcset="images/hero-small.webp">
+                <source media="(min-width: 601px)" srcset="images/hero-large.webp">
+                <img src="images/hero-large.webp" alt="Beautiful Nairobi skyline" loading="lazy">
+            </picture>
+            <div class="hero-text">
+                <h2>Find Your Perfect Home in Nairobi</h2>
+                <p>Search hundreds of verified rentals across the city</p>
+            </div>
+        </section>
+
+        <section id="rentals" class="rental-listings">
+            <h2>Featured Rentals</h2>
+            <div class="filters">
+                <select id="neighborhood-filter">
+                    <option value="">All Neighborhoods</option>
+                </select>
+                <select id="price-filter">
+                    <option value="">Any Price</option>
+                    <option value="0-15000">Under KSh 15,000</option>
+                    <option value="15000-30000">KSh 15,000 - 30,000</option>
+                    <option value="30000-50000">KSh 30,000 - 50,000</option>
+                    <option value="50000-100000">KSh 50,000+</option>
+                </select>
+                <select id="type-filter">
+                    <option value="">Any Type</option>
+                    <option value="apartment">Apartment</option>
+                    <option value="studio">Studio</option>
+                    <option value="house">House</option>
+                    <option value="shared">Shared</option>
+                </select>
+            </div>
+            <div id="properties-container" class="properties-grid"></div>
+        </section>
+
+        <section id="reviews" class="reviews-section">
+            <h2>Tenant Reviews</h2>
+            <div class="reviews-container">
+                <div class="review-stats">
+                    <h3>Share Your Experience</h3>
+                    <p>We value your feedback to help improve our service</p>
+                    <div class="review-counter">
+                        <p>Total reviews submitted: <span id="totalReviews">0</span></p>
+                    </div>
+                </div>
+                <form id="reviewForm" method="get" action="review.html" class="review-form">
+                    <div class="form-group">
+                        <label for="property">Property Reviewed*</label>
+                        <select id="property" name="property" required>
+                            <option value="" disabled selected>Select a Property...</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Rating*</label>
+                        <div class="rating">
+                            <input type="radio" id="star5" name="rating" value="5" required>
+                            <label for="star5">★</label>
+                            <input type="radio" id="star4" name="rating" value="4">
+                            <label for="star4">★</label>
+                            <input type="radio" id="star3" name="rating" value="3">
+                            <label for="star3">★</label>
+                            <input type="radio" id="star2" name="rating" value="2">
+                            <label for="star2">★</label>
+                            <input type="radio" id="star1" name="rating" value="1">
+                            <label for="star1">★</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="review-text">Your Review</label>
+                        <textarea id="review-text" name="review" placeholder="Share your experience..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="reviewer-name">Your Name (optional)</label>
+                        <input type="text" id="reviewer-name" name="name" placeholder="Anonymous">
+                    </div>
+
+                    <input type="submit" value="Submit Review" class="submit-btn">
+                </form>
+            </div>
+        </section>
+
+        <section id="rules" class="terms-section">
+            <h2>Terms & Conditions</h2>
+            <div class="terms-content">
+                <article>
+                    <h3>Rental Guidelines</h3>
+                    <ul>
+                        <li>All listings are verified by our team</li>
+                        <li>Prices are negotiable between tenant and landlord</li>
+                        <li>Security deposits typically equal one month's rent</li>
+                        <li>Minimum lease period is usually 6 months</li>
+                    </ul>
+                </article>
+                <article>
+                    <h3>Safety Tips</h3>
+                    <ul>
+                        <li>Always view the property in person</li>
+                        <li>Meet landlords in public spaces first</li>
+                        <li>Never transfer money before signing a contract</li>
+                        <li>Check all utilities before moving in</li>
+                    </ul>
+                </article>
+                <article class="neighborhood-guide">
+                    <h3>Neighborhood Guide</h3>
+                    <div class="safety-ratings">
+                        <!-- Dynamically populated -->
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section class="newsletter">
+            <h2>Get Rental Alerts</h2>
+            <form id="newsletterForm" class="newsletter-form">
+                <div class="form-group">
+                    <label for="email">Email Address*</label>
+                    <input type="email" id="email" name="email" required placeholder="your@email.com">
+                </div>
+                <div class="form-group">
+                    <label for="preferences">Preferences</label>
+                    <select id="preferences" name="preferences" multiple>
+                        <option value="apartment">Apartments</option>
+                        <option value="studio">Studios</option>
+                        <option value="house">Houses</option>
+                        <option value="shared">Shared Spaces</option>
+                    </select>
+                </div>
+                <button type="submit" class="submit-btn">Subscribe</button>
+            </form>
+        </section>
     </main>
+
     <footer>
-        <p>©<span id="currentyear"></span> 🏠James Omondi.🏠 Kenya .</p>
-        <p>Last updated: <span id="lastModified"></span></p>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <p>Email: info@nairobihousehunt.com</p>
+                <p>Phone: +254 700 000000</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#rentals">Search Rentals</a></li>
+                    <li><a href="#rules">Safety Tips</a></li>
+                    <li><a href="#reviews">Tenant Reviews</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Follow Us</h3>
+                <div class="social-icons">
+                    <a href="#" aria-label="Facebook"><img src="images/facebook-icon.svg" alt="Facebook"
+                            loading="lazy"></a>
+                    <a href="#" aria-label="Twitter"><img src="images/twitter-icon.svg" alt="Twitter"
+                            loading="lazy"></a>
+                    <a href="#" aria-label="Instagram"><img src="images/instagram-icon.svg" alt="Instagram"
+                            loading="lazy"></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>©<span id="currentyear"></span> Nairobi House Hunt | James Omondi</p>
+            <p>Last updated: <span id="lastModified"></span></p>
+            <p id="visitCounter">Visits: <span>0</span></p>
+        </div>
     </footer>
+
     
 </body>
+
 </html>

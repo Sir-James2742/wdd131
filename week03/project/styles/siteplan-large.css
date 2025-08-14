@@ -1,18 +1,59 @@
-@media screen and (min-width: 640px)
-{
-    img{
-        display:relative;
-        width :100%;
+@media (max-width: 768px) {
+    .header-container {
+        flex-direction: column;
+        align-items: flex-start;
     }
-    article{
-        display:absolute;
+
+    #menubutton {
+        display: block;
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
     }
-    .purpose{
-        left: 2rem;
-        top:10rem;
+
+    #mainnav {
+        display: none;
+        width: 100%;
     }
-    .scenario{
-        right:2rem;
-        top:10rem;
+
+    #mainnav.active {
+        display: block;
+    }
+
+    .navlist {
+        flex-direction: column;
+        margin-top: 1rem;
+    }
+
+    .navlist li {
+        margin: 0;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .navlist a {
+        display: block;
+        padding: 0.75rem 0;
+    }
+
+    .hero-text h2 {
+        font-size: 2rem;
+    }
+
+    .reviews-container {
+        grid-template-columns: 1fr;
+    }
+
+    .properties-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .filters {
+        flex-direction: column;
+    }
+
+    .filters select {
+        width: 100%;
     }
 }
